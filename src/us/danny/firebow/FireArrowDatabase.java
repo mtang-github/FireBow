@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.bukkit.entity.Arrow;
+import org.bukkit.entity.Entity;
 
 public class FireArrowDatabase {
 	
@@ -50,15 +51,24 @@ public class FireArrowDatabase {
 		Iterator<ArrowEntry> itr = arrowEntryList.iterator();
 		while(itr.hasNext()) {
 			ArrowEntry entry = itr.next();
+			Arrow arrow = entry.getArrow();
 			if(entry.tickMod(tickMod)) {
-				if(entry.getArrow().isDead()) {
+				if(arrow.isDead()) {
+					Entity passenger = arrow.getPassenger();
+					if(passenger != null) {
+						passenger.remove();
+					}
 					itr.remove();
 				}
 				else {
-					toRet.add(entry.getArrow());
+					toRet.add(arrow);
 				}
 			}
 			if(entry.tickDown()) {
+				Entity passenger = arrow.getPassenger();
+				if(passenger != null) {
+					passenger.remove();
+				}
 				itr.remove();
 			}
 		}
